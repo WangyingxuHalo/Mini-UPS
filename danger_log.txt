@@ -1,0 +1,52 @@
+Mini-UPS Danger Log
+- Problem (1) :
+One of the requirements are the function to redirect the package to another place if the package is not yet out for delivery. But we find that under some circumstances that users cannot change destination, for example, the package is asked to deliver to required destination, or the package has arrived.
+Solution for (1) :
+We solve this problem by limiting the rights to click 'change address' function for different status packages. Firstly, the user should log in to change the destination of their packages. Then, we will display 'change address' button after each item if their status are 'waiting for pickup' or 'waiting for loading'.
+
+- Problem (2) :
+We have 'Forget Password' function. But in this function, we only provide an API like 0.0.0/xxx/xx to let them change their password. It is actually not safe. Anyone who gets this link can change the password for any user. We think we should use some method to only allow one-time use and should make the API more complexed so that not everyone can use in the future.
+
+- Problem (3) :
+Changing address during package delivering will lead to communication inconveniences between world and UPS since there could be time lags between sending and receiving.
+Solution for (3) : 
+We restricted that address change can only happen before the package reaches "delivering" status to avoid communication conflicts.
+
+- Problem (4) :
+We are responsible for the final delivery of the package, and if we want to enable the function of letting users change package delivery address, we should try to avoid excess communication to add more efficiency. 
+Solution for (4) :
+Each time a user want to change delivery address of certain package, we let Amazon redirect user to our webpage, so that user can change address directly on our end to avoid excess communication.
+
+- Problem (5) :
+Completions that the world send to UPS will include two situations. The first situation, which tells us that truck has arrived to warehouse, is more important to us. Thus, we need to find a way to distinguish between the two situaitons.
+Solution for (5) :
+An unordered map is used to keep track of truck completions. Each time a truck arrived at a warehouse, we will store its truckid as key and the world's sequence number as value. We will than use the information to determine whether a truck has arrived the warehouse or not. After each use, we will pop the key-value pair out.
+
+- Problem (6) :
+The way we allocated trucks is to query truck status from world everytime we need to allocate a truck. This may cause a time difference as we could determined to use for example, truck 1, but we have not yet tell the world, while another thread handling another package queries the status from world, and world will tell that the truck is still available. In this case, there might be that truck 1 is doing loading (which is not available for new requests) and we are trying to assign it to a new task.
+Solution for (6) :
+We immediately add the picked truckid into a set. We than see if the newly picked truckid is already in the set. If so, we keep selecting a new truckid. We will remove the truck id from the set once we sent command to world (because the world will than update the truck status).
+
+- Problem (7) :
+When querying trucks from the world, we will sometimes have an intermittent list index out of range problem from decodeVarint. We analyzed the decoder.py in google protobuf and found that it might due to the message length issue. (We found that if the buffer we received is >=128 when modulus 256, the problem will happen).
+Solution for (7) :
+We reduced query from world to one truck query at a time, so that the response message length can be shorter.
+
+- Problem (8) :
+When saving delivery address, there could be that users have already changed package destination at our end before Amazon send previous destination to us.
+Solution for (8) :
+Each time we save delivery address for a package, we will check inside our database whether that package already has a destination, if so, meaning that users have changed address, so we simply discard the address that Amazon sends to us. Else, we save that address.
+
+- Problem (9) :
+In some cases, multiple threads could access and modify a same variable, such as sequence number.
+Solution for (9) : 
+we added thread locks to guard those variables
+
+- Problem (10) : 
+It is possible that both world and Amazon can resend multiple request to us, so there might be repeated handling.
+Solution for (10) : 
+we used two lists to keep track of world’s sequence number and Amazon’s sequence number that we already handled. And so each time we receive commands, we will check whether they have been handled first. If so, we directly resend corresponding acks.
+
+- Problem (11) : 
+It is possible that our commands lost during sending. So we need to handle this situation to make sure that both world and Amazon received our requests.
+Solution for (11) : We used a list to keep track of all acks we received. In every place that we need to ensure they received our commands, we insert a while loop to check if the sequence number we sent are in the list of received acks. If not, we will keep resending until it is in our list.

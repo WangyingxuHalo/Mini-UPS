@@ -1,0 +1,19 @@
+Connect to DB success
+Database connection closed.
+Connect to DB success
+Database connection closed.
+Connect to DB success
+Database connection closed.
+connected with world successfully
+Connect to DB success
+Database connection closed.
+Initilization msg sent to world
+World connect result: connected!
+World ID received: 
+41
+connected with amazon successfully
+Sent UASendWorldId
+[DEBUG]: received ack from amazon
+[DEBUG]: msg received:  b'(\x00\xf8\x0f\x01'
+[DEBUG]: seq num received from amazon 1
+[DEBUG]: 3rd ack sent

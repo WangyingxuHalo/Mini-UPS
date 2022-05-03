@@ -1,0 +1,47 @@
+Mini-UPS Differentiation
+1. Log Out & Remember Account
+We not only provide register &  login option, but provide log out option. Before users log out, we will remember users until they log out.
+
+2. Display User Information to Users
+If users log in, we will display their information in the management page: User Name, UPS ID & Email Address. They can provide that UPS ID to Mini-Amazon to track their packages here in Mini-UPS.
+
+3.  Filter Condition When Displaying 'Change Address' Button
+We will only display 'Change Address' Button when their status are 'waiting for pick up' & 'waiting for loading'. In this way, users will not be confused about when they can change address.
+
+4. Changing Password
+We allow users to change their password when they log in. But they should also enter original password to be sure that they are the true user of that account.
+
+5. Forget Password
+If users forget their password, they can click 'Forget Password?' in the login page. It will then ask them to enter their user name and email address to verify their identity. And then they will receive a email. After clicking the link in it, they can go to a web page to reset their password.
+
+6. Email Notification
+We provide email notification when 'change address of a certain package', 'reset password', or 'forget password'. Inside email content, we will show you the details of this action.
+We also provide email notifications each time the user's package status changes, e.g. when the package is waiting for pick up, loaded, and delivered.
+
+7. Contact Administrator of UPS
+When users meet problems regarding any aspects of their packages or they have any questions, they can have a live chat with Administrators from UPS if they have logged in. It will be like a real chatting software. They can send messages and receive messages from Administrators. In our design, we only set one administrator: Yingxu.
+
+8. Manage Messages from Users
+If you log in as an Administrator, you can view all the messages from all users that have sent messages to us.
+
+9. Changing Theme Color
+Users can change their management page theme color if they have logged in.
+
+10. Language Changing
+We provide 2 languages: English & Chinese. You can switch from one to another in the homepage. Once changed, you can view all the pages in your preferred language.
+
+11. Provide Feedback
+In the homepage, we have a page to let users to enter their feedback regarding our services or other aspects. If they enter that successfully, we will record them in our databases.
+
+12. Redirect Button
+Users can use button to directly go back to home or go to their management page freely instead of only using 'back' button to go back to previous page.
+
+
+13. Team, Services Information Display
+We display our team information & every service we provide in the homepage so that users can easily see what we can do.
+
+14. Beautiful & Real Page like UPS
+We go to UPS page and see their web page structure to design the structure of our website. It is more close to the real-world beautiful website instead of only a poorly-designed website.
+
+15. Allow UPS User Query
+We allow Mini-Amazon to query if a UPS ID exists or not when they purchase things

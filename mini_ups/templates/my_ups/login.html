@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UPS Login</title>
+    <link rel="stylesheet" href="../static/css/style_login.css">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+<script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+            }
+        }
+        return cookieValue;
+    }
+    function forget_password() {
+        var editcode = '<form action="" method="post" id="editInfo">' +
+            '<div class="show-container">' +
+            '<div class="info-section"><p class="req-title">Email Address</p><input type="text" name="email_address" id="email_address" /></div>' +
+            '<div class="info-section"><p class="req-title">User Name</p><input type="text" name="user_name" id="user_name" /></div>' +
+            '</div>';
+
+          layui.use('layer', function () {
+              var layer = layui.layer;
+              var index = layer.open({
+                  type: 1
+                  , title: 'Forget Password'
+                  , btn: ['Send Email', 'Close']
+                  , btn1: function () {
+                      var email_address = document.getElementById("email_address");
+                      var user_name = document.getElementById("user_name");
+                      var csrftoken = getCookie('csrftoken');
+                      var xhttp = new XMLHttpRequest();
+                      var api = '/ups/forget_password';
+                      xhttp.open('POST', api, true);
+                      xhttp.setRequestHeader("X-CSRFToken", csrftoken);
+                      xhttp.setRequestHeader('Content-Type', 'application/json');
+                      xhttp.send(JSON.stringify({
+                          'email_address': email_address.value,
+                          'user_name': user_name.value
+                      }));
+
+                      xhttp.onreadystatechange = function () {
+                          if (this.readyState == 4 && this.status == 200) {
+                              var obj = JSON.parse(this.responseText);
+                              if (obj['status'] == 'Success') {
+                                  alert('Reset message has been sent to your email');
+                                  layer.closeAll();
+                              } else {
+                                  alert(obj['error_msg']);
+                                  layer.close(index);
+                              }
+                          }
+                      }
+                  }
+                  , btn2: function () {
+                      layer.close(index);
+                  }
+                  , area: ['450px', '200px']
+                  , id: 'layerDemo1' 
+                  , content: editcode
+                  , btnAlign: 'c' 
+                  , shade: 0.8 
+                  });
+          });
+    }
+</script>
+
+<body>
+
+
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form action="/ups/user_login" class="sign-in-form" method="post">
+                    <h2 class="title">Login</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="User Name" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" />
+                    </div>
+                    <div>
+                        <a href="#" onclick="forget_password()"><p>Forget Password?</p></a>
+                    </div>
+                    {% if login_error %}
+                    <p class="social-text">{{ login_error }}</p>
+                    {% endif %}
+                    <input type="submit" value="Login" class="btn solid" />
+                    {% csrf_token %}
+                </form>
+                <form action="/ups/register" class="sign-up-form" method="post">
+                    <h2 class="title">Register</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="User Name" id="username" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email" id="email"/>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" id="password"/>
+                    </div>
+                    {% if regis_error %}
+                    <p class="social-text">{{ regis_error }}</p>
+                    {% endif %}
+                    <input type="submit" class="btn" value="Register" />
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>New here ?</h3>
+                    <p>
+                        Join us and get a better package delivery experience
+                    </p>
+                    <button class="btn transparent" id="sign-up-btn">
+                        Register
+                    </button>
+                    <a href="/ups/home"><p>Back to Home</p></a>
+                </div>
+                <!-- <img src="../static/img/slider/2.webp" class="image" alt="" /> -->
+            </div>
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>One of us ?</h3>
+                    <p>
+                        Log in and have a better package delivery experience
+                    </p>
+                    <button class="btn transparent" id="sign-in-btn">
+                        Sign in
+                    </button>
+                    <a href="/ups/home"><p>Back to Home</p></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src='https://kit.fontawesome.com/64d58efce2.js'></script>
+    <script src="../static/js/script_login.js"></script>
+</body>
+</html>
