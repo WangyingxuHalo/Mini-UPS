@@ -377,9 +377,9 @@ def change_simspeed(speed):
 
 def send_email1(trackingnum,content):
     smtp_server = "smtp.gmail.com"
-    sender_email = "wangyingxu99@gmail.com"
-    username = "wangyingxu99"
-    password = "053534123"
+    sender_email = "xx@xx.com"
+    username = "xx"
+    password = "xx"
     conn = connectDB()
     cur = conn.cursor()
     sql0 = "SELECT userid from my_ups_package WHERE trackingnum=%s"
